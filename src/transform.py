@@ -2,7 +2,7 @@ from tulip import tlp
 # layout布局算法
 # 1. 将图输入方式统一
 # 调用tulip实现FM^3布局
-def layout(jsonObj):
+def layout(jsonObj,paramsToSet):
     nodeMap={}
     graph=tlp.newGraph()
     for node in jsonObj['nodes']:
@@ -11,14 +11,24 @@ def layout(jsonObj):
     for link in jsonObj['links']:
         e=graph.addEdge(nodeMap[link['source']],nodeMap[link['target']])  
     params = tlp.getDefaultPluginParameters('FM^3 (OGDF)', graph)
+    for key,value in paramsToSet.items():
+        params[key]=value;
     print('getDefaultPluginParameters finished')
     resultLayout = graph.getLayoutProperty('resultLayout')
-    success = graph.applyLayoutAlgorithm('FM^3 (OGDF)', resultLayout, params)
-    for node in jsonObj['nodes']:
-        node['x']=resultLayout.getNodeValue(nodeMap[node['id']])[0]
-        node['y']=resultLayout.getNodeValue(nodeMap[node['id']])[1]
-    print('layout finished')
-    return jsonObj
+    try:
+        success = graph.applyLayoutAlgorithm('FM^3 (OGDF)', resultLayout, params)
+    except BaseException as b:
+        return 'params error!'
+    else:
+        for node in jsonObj['nodes']:
+            node['x']=resultLayout.getNodeValue(nodeMap[node['id']])[0]
+            node['y']=resultLayout.getNodeValue(nodeMap[node['id']])[1]
+        if success[0]==True:
+            print('layout success')
+            return jsonObj
+        else:
+            return 'layout error!'
+
 
 if __name__ == '__main__':
     payload = {
@@ -92,4 +102,4 @@ if __name__ == '__main__':
                 }
             ]
         }
-    print(graphTransform(payload))
+    print(layout(payload,{}))
