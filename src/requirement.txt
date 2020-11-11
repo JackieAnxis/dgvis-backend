@@ -1,0 +1,6 @@
+python-louvain
+networkx
+numpy
+Node2Vec
+scikit-learn
+flask
