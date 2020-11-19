@@ -7,8 +7,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 global results
-@app.route('/layout', methods=['GET','POST'])
-def dataTransform():
+@app.route('/fm3_layout', methods=['GET','POST'])
+def fm3_layout():
     data = request.json
     graph = data['graph']
     params = {}

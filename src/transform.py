@@ -12,7 +12,9 @@ def layout(jsonObj,paramsToSet):
         e=graph.addEdge(nodeMap[link['source']],nodeMap[link['target']])  
     params = tlp.getDefaultPluginParameters('FM^3 (OGDF)', graph)
     for key,value in paramsToSet.items():
-        params[key]=value;
+        if key == 'New initial placement':
+            value = value == 'True'
+        params[key]=value
     print('getDefaultPluginParameters finished')
     resultLayout = graph.getLayoutProperty('resultLayout')
     try:
