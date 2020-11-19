@@ -9,10 +9,12 @@ CORS(app)
 global results
 @app.route('/layout', methods=['GET','POST'])
 def dataTransform():
-    data = json.loads(request.get_data(as_text=True))
-    graph=data['graph']
-    params=data['params']
-    layout(graph,params)
+    data = request.json
+    graph = data['graph']
+    params = {}
+    if 'params' in data:
+        params = data['params']
+    layout(graph, params)
     return data
 
 @app.route('/get_graph',methods=['GET','POST'])
