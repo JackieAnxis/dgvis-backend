@@ -33,7 +33,7 @@ def dataEmb():
 
 def start():
     global results
-    f = open('./graph.json','r')
+    f = open('./graph_degree.json','r')
     results = json.load(f)
     f.close()
 
