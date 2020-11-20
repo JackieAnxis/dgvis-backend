@@ -1,7 +1,7 @@
 
 from flask import Flask, request
 from flask_cors import CORS
-from transform import layout
+from transform import fm3,circular_OGDF
 from fun import deal_emb
 import json
 app = Flask(__name__)
@@ -14,7 +14,17 @@ def fm3_layout():
     params = {}
     if 'params' in data:
         params = data['params']
-    layout(graph, params)
+    fm3(graph, params)
+    return data
+
+@app.route('/circular_OGDF_layout', methods=['GET','POST'])
+def circular_OGDF_layout():
+    data = request.json
+    graph = data['graph']
+    params = {}
+    if 'params' in data:
+        params = data['params']
+    circular_OGDF(graph, params)
     return data
 
 @app.route('/get_graph',methods=['GET','POST'])

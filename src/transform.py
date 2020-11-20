@@ -2,7 +2,7 @@ from tulip import tlp
 # layout布局算法
 # 1. 将图输入方式统一
 # 调用tulip实现FM^3布局
-def layout(jsonObj,paramsToSet):
+def fm3(jsonObj,paramsToSet):
     nodeMap={}
     graph=tlp.newGraph()
     for node in jsonObj['nodes']:
@@ -19,6 +19,35 @@ def layout(jsonObj,paramsToSet):
     resultLayout = graph.getLayoutProperty('resultLayout')
     try:
         success = graph.applyLayoutAlgorithm('FM^3 (OGDF)', resultLayout, params)
+    except BaseException as b:
+        return 'params error!'
+    else:
+        for node in jsonObj['nodes']:
+            node['x']=resultLayout.getNodeValue(nodeMap[node['id']])[0]
+            node['y']=resultLayout.getNodeValue(nodeMap[node['id']])[1]
+        if success[0]==True:
+            print('layout success')
+            return jsonObj
+        else:
+            return 'layout error!'
+
+def circular_OGDF(jsonObj,paramsToSet):
+    nodeMap={}
+    graph=tlp.newGraph()
+    for node in jsonObj['nodes']:
+        n=graph.addNode({"_label":node['id']})
+        nodeMap[node['id']]=n
+    for link in jsonObj['links']:
+        e=graph.addEdge(nodeMap[link['source']],nodeMap[link['target']])  
+    params = tlp.getDefaultPluginParameters('Circular (OGDF)', graph)
+    for key,value in paramsToSet.items():
+        if key == 'New initial placement':
+            value = value == 'True'
+        params[key]=value
+    print('getDefaultPluginParameters finished')
+    resultLayout = graph.getLayoutProperty('resultLayout')
+    try:
+        success = graph.applyLayoutAlgorithm('Circular (OGDF)', resultLayout, params)
     except BaseException as b:
         return 'params error!'
     else:
@@ -104,4 +133,4 @@ if __name__ == '__main__':
                 }
             ]
         }
-    print(layout(payload,{}))
+    print(circular_OGDF(payload,{}))

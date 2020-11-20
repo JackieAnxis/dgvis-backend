@@ -4,7 +4,7 @@ import json
 
 # from requests.api import request
 # from requests.models import Response
-url = "http://127.0.0.1:5000/layout"  # 接口地址
+url = "http://127.0.0.1:5000/circular_OGDF_layout"  # 接口地址
 
 # 消息头数据
 # headers = {
@@ -94,7 +94,7 @@ payload = {
             ]
         }
 # verify = False 忽略SSH 验证 
-data=json.dumps(payload)
+data=json.dumps({"graph":payload})
 # time.sleep(0.5)
 r = requests.post(url, data=data,headers=headers)
 r.close()
