@@ -19,9 +19,9 @@ pip install -r requirement.txt
 
 supporting below:
 
-| Method | Content-Type     | data                                                      | url                                        |
-| ------ | ---------------- | --------------------------------------------------------- | ------------------------------------------ |
-| POST   | application/json | {graph:<graph>,params:{<param-name>:<param-valid-value>}} | http://<host_address>/layout/<layout_name> |
+| Method | Content-Type     | data                                                      | url                                 |
+| ------ | ---------------- | --------------------------------------------------------- | ----------------------------------- |
+| POST   | application/json | {graph:<graph>,params:{<param-name>:<param-valid-value>}} | http://<host_address>/<layout_name> |
 
 #### FM^3
 
@@ -49,6 +49,20 @@ supporting below:
 | Initial Placement Forces  | `string` | RandomRandIterNr **Values:** UniformGrid _(Uniform placement on a grid)_ RandomTime _(Random placement, based on current time)_ RandomRandIterNr _(Random placement, based on randIterNr())_ KeepPositions _(No change in placement)_ | input     | Specifies how the initial placement is done.                                                                           |
 | Reduced Tree Construction | `string` | SubtreeBySubtree **Values:** PathByPath SubtreeBySubtree                                                                                                                                                                              | input     | Specifies how the reduced bucket quadtree is constructed.                                                              |
 | Smallest Cell Finding     | `string` | Iteratively **Values:** Iteratively _(Iteratively, in constant time)_ Aluru _(According to formula by Aluru et al., in constant time)_                                                                                                | input     | Specifies how to calculate the smallest quadratic cell surrounding particles of a node in the reduced bucket quadtree. |
+
+### Circular (OGDF)
+
+[more details referred](https://tulip.labri.fr/Documentation/current/tulip-python/html/tulippluginsdocumentation.html#layout)
+
+##### params
+
+| name           | type    | default | direction | description                                           |
+| :------------- | :------ | :------ | :-------- | :---------------------------------------------------- |
+| minDistCircle  | `float` | 20      | input     | The minimal distance between nodes on a circle.       |
+| minDistLevel   | `float` | 20      | input     | The minimal distance between father and child circle. |
+| minDistSibling | `float` | 10      | input     | The minimal distance between circles on same level.   |
+| minDistCC      | `float` | 20      | input     | The minimal distance between connected components.    |
+| pageRatio      | `float` | 1       | input     | The page ratio used for packing connected components. |
 
 ### Other Algorithms
 
