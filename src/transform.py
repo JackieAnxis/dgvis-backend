@@ -2,59 +2,64 @@ from tulip import tlp
 # layout布局算法
 # 1. 将图输入方式统一
 # 调用tulip实现FM^3布局
-def fm3(jsonObj,paramsToSet):
-    nodeMap={}
-    graph=tlp.newGraph()
+
+
+def fm3(jsonObj, paramsToSet):
+    nodeMap = {}
+    graph = tlp.newGraph()
     for node in jsonObj['nodes']:
-        n=graph.addNode({"_label":node['id']})
-        nodeMap[node['id']]=n
+        n = graph.addNode({"_label": node['id']})
+        nodeMap[node['id']] = n
     for link in jsonObj['links']:
-        e=graph.addEdge(nodeMap[link['source']],nodeMap[link['target']])  
+        e = graph.addEdge(nodeMap[link['source']], nodeMap[link['target']])
     params = tlp.getDefaultPluginParameters('FM^3 (OGDF)', graph)
-    for key,value in paramsToSet.items():
+    for key, value in paramsToSet.items():
         if key == 'New initial placement':
             value = value == 'True'
-        params[key]=value
+        params[key] = value
     print('getDefaultPluginParameters finished')
     resultLayout = graph.getLayoutProperty('resultLayout')
     try:
-        success = graph.applyLayoutAlgorithm('FM^3 (OGDF)', resultLayout, params)
+        success = graph.applyLayoutAlgorithm(
+            'FM^3 (OGDF)', resultLayout, params)
     except BaseException as b:
         return 'params error!'
     else:
         for node in jsonObj['nodes']:
-            node['x']=resultLayout.getNodeValue(nodeMap[node['id']])[0]
-            node['y']=resultLayout.getNodeValue(nodeMap[node['id']])[1]
-        if success[0]==True:
+            node['x'] = resultLayout.getNodeValue(nodeMap[node['id']])[0]
+            node['y'] = resultLayout.getNodeValue(nodeMap[node['id']])[1]
+        if success[0] == True:
             print('layout success')
             return jsonObj
         else:
             return 'layout error!'
 
-def circular_OGDF(jsonObj,paramsToSet):
-    nodeMap={}
-    graph=tlp.newGraph()
+
+def circular_OGDF(jsonObj, paramsToSet):
+    nodeMap = {}
+    graph = tlp.newGraph()
     for node in jsonObj['nodes']:
-        n=graph.addNode({"_label":node['id']})
-        nodeMap[node['id']]=n
+        n = graph.addNode({"_label": node['id']})
+        nodeMap[node['id']] = n
     for link in jsonObj['links']:
-        e=graph.addEdge(nodeMap[link['source']],nodeMap[link['target']])  
+        e = graph.addEdge(nodeMap[link['source']], nodeMap[link['target']])
     params = tlp.getDefaultPluginParameters('Circular (OGDF)', graph)
-    for key,value in paramsToSet.items():
+    for key, value in paramsToSet.items():
         if key == 'New initial placement':
             value = value == 'True'
-        params[key]=value
+        params[key] = value
     print('getDefaultPluginParameters finished')
     resultLayout = graph.getLayoutProperty('resultLayout')
     try:
-        success = graph.applyLayoutAlgorithm('Circular (OGDF)', resultLayout, params)
+        success = graph.applyLayoutAlgorithm(
+            'Circular (OGDF)', resultLayout, params)
     except BaseException as b:
         return 'params error!'
     else:
         for node in jsonObj['nodes']:
-            node['x']=resultLayout.getNodeValue(nodeMap[node['id']])[0]
-            node['y']=resultLayout.getNodeValue(nodeMap[node['id']])[1]
-        if success[0]==True:
+            node['x'] = resultLayout.getNodeValue(nodeMap[node['id']])[0]
+            node['y'] = resultLayout.getNodeValue(nodeMap[node['id']])[1]
+        if success[0] == True:
             print('layout success')
             return jsonObj
         else:
@@ -63,74 +68,74 @@ def circular_OGDF(jsonObj,paramsToSet):
 
 if __name__ == '__main__':
     payload = {
-            "nodes": [
-                {
-                    "id": "1583"
-                },
-                {
-                    "id": "1599"
-                },
-                {
-                    "id": "1529"
-                },
-                {
-                    "id": "1510"
-                },
-                {
-                    "id": "1544"
-                },
-                {
-                    "id": "1573"
-                },
-                {
-                    "id": "1549"
-                },
-                {
-                    "id": "1525"
-                },
-                {
-                    "id": "1523"
-                },
-                {
-                    "id": "1602"
-                },
-                {
-                    "id": "1631"
-                }
-            ],
-            "links": [
-                {
-                    "source": "1583",
-                    "target": "1599"
-                },
-                {
-                    "source": "1583",
-                    "target": "1510"
-                },
-                {
-                    "source": "1599",
-                    "target": "1529"
-                },
-                {
-                    "source": "1599",
-                    "target": "1510"
-                },
-                {
-                    "source": "1599",
-                    "target": "1523"
-                },
-                {
-                    "source": "1544",
-                    "target": "1573"
-                },
-                {
-                    "source": "1549",
-                    "target": "1525"
-                },
-                {
-                    "source": "1602",
-                    "target": "1631"
-                }
-            ]
-        }
-    print(circular_OGDF(payload,{}))
+        "nodes": [
+            {
+                "id": "1583"
+            },
+            {
+                "id": "1599"
+            },
+            {
+                "id": "1529"
+            },
+            {
+                "id": "1510"
+            },
+            {
+                "id": "1544"
+            },
+            {
+                "id": "1573"
+            },
+            {
+                "id": "1549"
+            },
+            {
+                "id": "1525"
+            },
+            {
+                "id": "1523"
+            },
+            {
+                "id": "1602"
+            },
+            {
+                "id": "1631"
+            }
+        ],
+        "links": [
+            {
+                "source": "1583",
+                "target": "1599"
+            },
+            {
+                "source": "1583",
+                "target": "1510"
+            },
+            {
+                "source": "1599",
+                "target": "1529"
+            },
+            {
+                "source": "1599",
+                "target": "1510"
+            },
+            {
+                "source": "1599",
+                "target": "1523"
+            },
+            {
+                "source": "1544",
+                "target": "1573"
+            },
+            {
+                "source": "1549",
+                "target": "1525"
+            },
+            {
+                "source": "1602",
+                "target": "1631"
+            }
+        ]
+    }
+    print(circular_OGDF(payload, {}))

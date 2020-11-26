@@ -7,7 +7,7 @@ def test():
     f.close()
     links = graph['links']
     links_set = set()
-    print(len(graph['nodes']),len(graph['links']))
+    print(len(graph['nodes']), len(graph['links']))
     # for link in links:
     #     t0 = str(link['source']) + '-' + str(link['target'])
     #     t1 = str(link['target']) + '-' + str(link['source'])
@@ -18,6 +18,7 @@ def test():
     #         links_set.add(t1)
     #     if t0 == t1:
     #         print(t0)
+
 
 if __name__ == '__main__':
     test()

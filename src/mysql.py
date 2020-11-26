@@ -13,7 +13,7 @@ def saveGraph():
     data = cursor.fetchall()
     G = nx.Graph()
     for item in data:
-        _id, _company_id, _role_id, _role_name, _role_type, _company_role, _equity_ratio, _dgraph_mark, time0, time1,equity_ratio = item
+        _id, _company_id, _role_id, _role_name, _role_type, _company_role, _equity_ratio, _dgraph_mark, time0, time1, equity_ratio = item
         if time0 <= 0 or time1 <= 0:
             continue
         time = time0
@@ -24,7 +24,7 @@ def saveGraph():
         if source == target:
             continue
         G.add_edge(source, target, timestamp=time)
-        if equity_ratio!= None:
+        if equity_ratio != None:
             G.nodes[source]['equity_ratio'] = float(equity_ratio)
         else:
             G.nodes[source]['equity_ratio'] = None
@@ -72,7 +72,7 @@ def add_attribute():
         data = cursor.fetchone()
         reg_capital, reg_capital, chi_name, company_type, business_scope, reg_addr = data
         result[id] = {"reg_capital": reg_capital, "reg_capital": reg_capital, 'chi_name': chi_name,
-                      'company_type': company_type, "business_scope": business_scope, "reg_addr": reg_addr,"equity_ratio":equity_ratio}
+                      'company_type': company_type, "business_scope": business_scope, "reg_addr": reg_addr, "equity_ratio": equity_ratio}
         i += 1
         if i % 10000 == 0:
             print(i)
@@ -80,62 +80,67 @@ def add_attribute():
     json.dump(result, f, ensure_ascii=False)
     f.close()
 
+
 def anomaly():
-    f = open('graph_attr.json', 'r',encoding='utf-8')
+    f = open('graph_attr.json', 'r', encoding='utf-8')
     graph = json.load(f)
     f.close()
     result = {}
     i = 0
-    k=0
+    k = 0
     for id in graph.keys():
         i += 1
         if i % 1000 == 0:
             print(i)
         node = graph[id]
-        sql ="select unix_timestamp(record_time), record_reason from downsee.dw_company_manage_abnormal where company_id =" +str(id)+';'
+        sql = "select unix_timestamp(record_time), record_reason from downsee.dw_company_manage_abnormal where company_id =" + str(id)+';'
         cursor.execute(sql)
         data = cursor.fetchall()
         node['anomaly'] = {'manage_abnormal': []}
-        if data!= None:
+        if data != None:
             for item in data:
                 record_time, record_reason = item
-                if record_time<0:
+                if record_time < 0:
                     continue
-                node['anomaly']['manage_abnormal'].append({'record_time':record_time,'record_reason':record_reason})
+                node['anomaly']['manage_abnormal'].append(
+                    {'record_time': record_time, 'record_reason': record_reason})
         result[id] = node
     print(k)
     f = open('graph_attr_manage_abnormal.json', 'w', encoding='utf-8')
     json.dump(result, f, ensure_ascii=False)
     f.close()
 
+
 def credit():
-    f = open('graph_attr_manage_abnormal.json', 'r',encoding='utf-8')
+    f = open('graph_attr_manage_abnormal.json', 'r', encoding='utf-8')
     graph = json.load(f)
     f.close()
     result = {}
     i = 0
-    k=0
+    k = 0
     for id in graph.keys():
         i += 1
         if i % 1000 == 0:
             print(i)
         node = graph[id]
-        sql ="select unix_timestamp(dishonesty_time), dishonesty_reason from downsee.dw_company_credit where company_id =" +str(id)+';'
+        sql = "select unix_timestamp(dishonesty_time), dishonesty_reason from downsee.dw_company_credit where company_id =" + str(id)+';'
         cursor.execute(sql)
         data = cursor.fetchall()
         node['anomaly']['credit'] = []
-        if data!= None:
+        if data != None:
             for item in data:
                 dishonesty_time, dishonesty_reason = item
-                if dishonesty_time<0:
+                if dishonesty_time < 0:
                     continue
-                k+=1
-                node['anomaly']['credit'].append({'dishonesty_time':dishonesty_time,'dishonesty_reason':dishonesty_reason})
+                k += 1
+                node['anomaly']['credit'].append(
+                    {'dishonesty_time': dishonesty_time, 'dishonesty_reason': dishonesty_reason})
         result[id] = node
     print(k)
     f = open('graph_attr_manage_credit.json', 'w', encoding='utf-8')
     json.dump(result, f, ensure_ascii=False)
     f.close()
+
 
 if __name__ == "__main__":
     connect()
