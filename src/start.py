@@ -66,7 +66,7 @@ def start():
         for key in attribute:
             node[key] = attribute[key]
     f.close()
-    f = open('./health_care_graph.json', 'r', encoding='UTF-8')
+    f = open('./health_care_graph_small.json', 'r', encoding='UTF-8')
     results['health_care'] = json.load(f)
     f.close()
 
