@@ -4,3 +4,5 @@ numpy
 Node2Vec
 scikit-learn
 flask
+flask_cors
+tulip-python
