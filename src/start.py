@@ -40,6 +40,11 @@ def get_health_care_graph():
     global results
     return results['health_care']
 
+@app.route('/get_health_care_graph_small', methods=['GET', 'POST'])
+def get_health_care_graph_small():
+    global results
+    return results['health_care_small']
+
 
 @app.route('/emb', methods=['GET', 'POST'])
 def dataEmb():
@@ -66,8 +71,11 @@ def start():
         for key in attribute:
             node[key] = attribute[key]
     f.close()
-    f = open('./health_care_graph_small.json', 'r', encoding='UTF-8')
+    f = open('./health_care_graph_hos_March.json', 'r', encoding='UTF-8')
     results['health_care'] = json.load(f)
+    f.close()
+    f = open('./health_care_graph_test.json', 'r', encoding='UTF-8')
+    results['health_care_small'] = json.load(f)
     f.close()
 
 
