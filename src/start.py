@@ -71,8 +71,21 @@ def start():
         for key in attribute:
             node[key] = attribute[key]
     f.close()
-    f = open('./health_care_graph_hos_March.json', 'r', encoding='UTF-8')
+    health_care_filename = './health_care_graph_daily_Oct2June.json'
+    f = open(health_care_filename , 'r', encoding='UTF-8')
     results['health_care'] = json.load(f)
+    if health_care_filename == './health_care_graph_daily_Oct2June.json': # remove links later than 2020/06/27
+        links = []
+        for link in results['health_care']['links']:
+            if link['timestamp'] <= 1593187200:
+                links.append(link)
+        for node in results['health_care']['nodes']:
+            if 'attr' in node:
+                for timestamp in node['attr']:
+                    if int(timestamp) >= 1590595200:
+                        node['attr'][timestamp]['anomaly1'] = None
+                        node['attr'][timestamp]['anomaly2'] = None
+        results['health_care']['links'] = links
     f.close()
     f = open('./health_care_graph_test.json', 'r', encoding='UTF-8')
     results['health_care_small'] = json.load(f)
