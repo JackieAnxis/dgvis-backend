@@ -6,6 +6,7 @@ from fun import deal_emb
 import json
 import time
 import copy
+import random
 
 app = Flask(__name__)
 CORS(app)
@@ -105,6 +106,88 @@ def start():
                         node['attr'][timestamp]['anomaly1'] = None
                         node['attr'][timestamp]['anomaly2'] = None
         results['health_care']['links'] = links
+
+    if health_care_filename == './health_care_graph_fake.json':
+        graphs = results['health_care']
+        graph = graphs['2020/5']
+
+        # add links
+        node_set = set(("37536924", "37086978", "74535899", "37216687", "38224680", "37131349", '4027'))
+        for node in graph['nodes']:
+            if node['id'] in node_set:
+                for time_key in node['attr']:
+                    if 'total_money' in node['attr'][time_key] and node['attr'][time_key]['ratio'] <= 0.7:
+                        ratio = round(random.uniform(0.7, 1), 2)
+                        total_money = round(random.uniform(30, 200), 2)
+                        node['attr'][time_key]['ratio'] = ratio
+                        node['attr'][time_key]['total_money'] = total_money
+                        node['attr'][time_key]['country_money'] = total_money * ratio  # country_money
+                        node['attr'][time_key]['count'] = random.randint(5, 30)
+                        node['attr'][time_key]['average_price'] = total_money / node['attr'][time_key]['count']
+        new_links = []
+        for link in graph['links']:
+            if link['source'] in node_set and link['target'] in node_set:
+                if link['timestamp'] == 1588694400:
+                    new_link = copy.deepcopy(link)
+                    new_link['timestamp'] += 24 * 60 * 60
+                    new_links.append(new_link)
+                    new_link = copy.deepcopy(link)
+                    new_link['timestamp'] += 3 * 24 * 60 * 60
+                    new_links.append(new_link)
+                    new_link = copy.deepcopy(link)
+                    new_link['timestamp'] += 10 * 24 * 60 * 60
+                    new_links.append(new_link)
+                else:
+                    new_links = []
+                    break
+
+        for link in new_links:
+            graph['links'].append(link)
+
+        graphs['2020/5'] = graph
+
+        graph = graphs['2020/6']
+        # remove links
+        links_tobe_removed = []
+        link_map = {}
+        node_set = {'267727', '4662527', '2495112'}
+        for node in graph['nodes']:
+            if node['id'] in node_set:
+                for time_key in node['attr']:
+                    if 'total_money' in node['attr'][time_key] and node['attr'][time_key]['ratio'] > 0.7:
+                        ratio = round(random.uniform(0, 0.7), 2)
+                        node['attr'][time_key]['ratio'] = ratio
+                        total_money = node['attr'][time_key]['total_money']
+                        node['attr'][time_key]['country_money'] = total_money * ratio  # country_money
+        for link in graph['links']:
+            if link['target'] in node_set or link['source'] in node_set:
+                if link['source'] == '9218':
+                    if link['target'] in link_map:
+                        link_map[link['target']] += 1
+                        if link_map[link['target']] > 5:
+                            links_tobe_removed.append(link)
+                    else:
+                        link_map[link['target']] = 1
+                if link['target'] == '9218':
+                    if link['source'] in link_map:
+                        link_map[link['source']] += 1
+                        if link_map[link['source']] > 5:
+                            links_tobe_removed.append(link)
+                    else:
+                        link_map[link['source']] = 1
+
+        for link in links_tobe_removed:
+            graph['links'].remove(link)
+
+        graphs['2020/6'] = graph
+
+        f = open(health_care_filename, 'w', encoding='UTF-8')
+        json.dump(graphs, f)
+        f.close()
+
+
+
+
 
     # layout
     if not isGraphsLayouted(results['health_care']):
